@@ -1,7 +1,6 @@
-# Test Currency COnverter Widget
+# Test Currency Converter Widget
 
 Currency converter component for practice. Built on React.
-
 
 # React app template
 

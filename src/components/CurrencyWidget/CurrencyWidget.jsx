@@ -33,22 +33,56 @@ export default class CurrencyWidget extends Component {
         });
     }
 
-    onResChangeValue = (event) => {
+    onResValueChange = (event) => {
+        const { value } = event.target;
+        const { resRate } = this.props;
+
+        this.setState({
+            currencyBase: this.roundToTwo(value / resRate),
+            currencyRes: value,
+        });
+    }
+
+    onCurrencySelect = (event) => {
+        const { name, value } = event.target;
+        const changedCurrency = {
+            [name] : value,
+        }
+        this.props.onCurrencyChange(changedCurrency);
     }
 
     render() {
+        const { currencyBase, currencyRes } = this.props;
+
         return (
             <form action="none">
-                <h5>Currency conversion</h5>
-                <p>USD to UAH</p>
+                <h5>Конвертація</h5>
                 <label >
-                    Base currency:
+                    <span>За чинним курсом НБУ </span>
                     <input type="number" name="currencyBase" onChange={this.onBaseValueChange} value={ this.state.currencyBase}/>
                 </label>
+                <select
+                    name="currencyBase"
+                    value={currencyBase}
+                    onChange={this.onCurrencySelect}
+                >
+                    {this.props.currencies.map((currency) => {
+                        return (<option value={currency} key={ currency }>{currency}</option>);
+                    })}                   
+                </select>
                 <label >
-                    Result:
-                    <input type="number" name="currencyRes" onChange={this.onResChangeValue} value={this.state.currencyRes}/>
+                    <span> дорівнює </span>
+                    <input type="number" name="currencyRes" onChange={this.onResValueChange} value={this.state.currencyRes}/>
                 </label>
+                <select
+                    name="currencyRes"
+                    value={currencyRes}
+                    onChange={this.onCurrencySelect}
+                >
+                    {this.props.currencies.map((currency) => {
+                        return (<option value={currency} key={ currency }>{currency}</option>);
+                    })} 
+                </select>
             </form>
         );
     }
@@ -56,4 +90,8 @@ export default class CurrencyWidget extends Component {
 
 CurrencyWidget.propTypes = {
     resRate: propTypes.number.isRequired,
+    currencyBase: propTypes.string.isRequired,
+    currencyRes: propTypes.string.isRequired,
+    onCurrencyChange: propTypes.func,
+    currencies: propTypes.arrayOf(propTypes.string).isRequired,
 }
